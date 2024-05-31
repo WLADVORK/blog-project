@@ -1,0 +1,134 @@
+@font-face {
+    font-family: 'Inter';
+    src: url(../../../public/fonts/inter/Inter-VariableFont.ttf);
+}
+
+.articleList {
+    margin-top: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    align-items: center;
+
+    .pagination {
+        display: flex;
+        height: 22px;
+        gap: 7px;
+
+        &__page {
+            font-family: 'Inter';
+            font-size: 12px;
+            line-height: 22px;
+            text-align: center;
+            width: 22px;
+            color: #000000BF;
+            border-radius: 5px;
+            border: none;
+            padding: 0;
+        }
+
+        &__page_active {
+            background-color: #1890FF;
+            color:#FFFFFF
+        }
+    }
+}
+
+.article {
+    width: 941px;
+    height: 140px;
+    padding: 10px 16px 16px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 12px 0px #00000026;
+    font-family: 'Inter';
+    font-weight: 400;
+    position: relative;
+
+
+    &__heading {
+        width: 682px;
+        display: flex;
+        gap: 13px;
+        align-items: center;
+    }
+
+    &__title {
+        font-size: 20px;
+        line-height: 28px;
+        color: #1890FF;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+        a {
+            color: #1890FF;
+            text-decoration: none;
+        }
+    }
+
+    .likes {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        height: 22px;
+
+        &__value {
+            font-size: 12px;
+            line-height: 22px;
+            color: #000000BF;
+        }
+    }
+
+    &__tags {
+        width: 682px;
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    &__tag {
+        font-size: 12px;
+        line-height: 14.52px;
+        color: #00000080;
+        padding: 3px 5px;
+        border: 1px solid #00000080;
+        border-radius: 2px;
+    }
+
+    .author {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        display: flex;
+        height: 46px;
+        gap: 12px;
+
+        &__info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        &__name {
+            font-size: 18px;
+            line-height: 24px;
+            color: #000000D9;
+        }
+
+        &__date {
+            font-size: 12px;
+            line-height: 16px;
+            color: #00000080;
+        }
+    }
+
+    &__description {
+        margin-top: 5px;
+        font-size: 12px;
+        line-height: 22px;
+        color: #000000BF;
+        width: 682px;
+    }
+
+}
+

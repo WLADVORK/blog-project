@@ -1,17 +1,68 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
-import './header.scss'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
-function Header() {
+import * as actions from '../../actions'
+
+import styles from './header.module.scss'
+
+function Header({ answer, userData, DATA_CLEAR }) {
   return (
-    <div className="header">
-      <span className="header__heading">
-        <Link to="/">Realworld Blog</Link>
-      </span>
-      <span className="header__signIn">Sign In</span>
-      <span className="header__signUp">Sign Up</span>
+    <div className={styles.header}>
+      <Link to="/" className={styles.header__heading}>
+        Realworld Blog
+      </Link>
+      {answer ? (
+        <>
+          <Link to="/" className={styles.header__createArticle}>
+            Create article
+          </Link>
+          <Link to="/profile">
+            <div className={styles.header__profile}>
+              <span className={styles.header__name}>{userData.user.username}</span>
+              <img
+                className={styles.header__icon}
+                alt="profile-icon"
+                src={userData.user.image ? `${userData.user.image}` : 'images/profile.svg'}
+              />
+            </div>
+          </Link>
+          <Link
+            to="/"
+            className={styles.header__logOut}
+            onClick={() => {
+              localStorage.removeItem('userData')
+              DATA_CLEAR()
+            }}
+          >
+            Log Out
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link to="/sign-in" className={styles.header__signIn}>
+            Sign In
+          </Link>
+          <Link to="/sign-up" className={styles.header__signUp}>
+            Sign Up
+          </Link>
+        </>
+      )}
     </div>
   )
 }
 
-export default Header
+const mapStatetoProps = ({ server }) => ({
+  answer: server.answer,
+  userData: server.userData,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  const { DATA_CLEAR } = bindActionCreators(actions, dispatch)
+  return {
+    DATA_CLEAR,
+  }
+}
+
+export default connect(mapStatetoProps, mapDispatchToProps)(Header)

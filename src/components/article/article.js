@@ -2,6 +2,7 @@
 import { connect } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import { format } from 'date-fns'
+import Markdown from 'react-markdown'
 
 import styles from './article.module.scss'
 
@@ -29,7 +30,9 @@ function Article({ article }) {
         </div>
         <div className={styles.article__description}>{article.description}</div>
       </div>
-      <div className={styles.article__main}>{article.body}</div>
+      <div className={styles.article__main}>
+        <Markdown>{article.body}</Markdown>
+      </div>
     </div>
   )
 }

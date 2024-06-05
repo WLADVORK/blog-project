@@ -3,11 +3,23 @@ import { Switch, Route } from 'react-router-dom'
 
 import ArticleList from '../article-list'
 import './main.scss'
+import SignUp from '../sign-up'
+import SignIn from '../sign-in'
+import ProfileEdit from '../profile-edit'
 
 function Main() {
   return (
     <div className="main">
       <Switch>
+        <Route path="/profile">
+          <ProfileEdit />
+        </Route>
+        <Route path="/sign-up">
+          <SignUp />
+        </Route>
+        <Route path="/sign-in">
+          <SignIn />
+        </Route>
         <Route path="/articles/">
           <ArticleList />
         </Route>

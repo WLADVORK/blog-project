@@ -16,9 +16,11 @@ import Article from '../article'
 
 import styles from './article-list.module.scss'
 
-function ArticleList({ page, maxPage, articles, INC_PAGE, DEC_PAGE, GET_ARTICLES }) {
+function ArticleList({ page, maxPage, articles, INC_PAGE, DEC_PAGE, GET_ARTICLES, SIGN_UP_CLEAR, SIGN_IN_CLEAR }) {
   const dispatch = useDispatch()
   useEffect(() => {
+    SIGN_UP_CLEAR()
+    SIGN_IN_CLEAR()
     dispatch((dispatched) => GET_ARTICLES(dispatched, page))
   }, [])
 
@@ -415,6 +417,12 @@ function ArticleList({ page, maxPage, articles, INC_PAGE, DEC_PAGE, GET_ARTICLES
 }
 
 const mapStateToProps = ({ pagination, server }) => {
+  if (!server.articles) {
+    return {
+      page: pagination.page,
+      maxPage: server.maxPage,
+    }
+  }
   const articles = server.articles.map((item) => {
     const tags = item.tagList.map((tag) => <div className={styles.article__tag}>{tag}</div>)
     const timeCreated = format(new Date(item.createdAt), 'LLLL d, yyy')
@@ -452,12 +460,14 @@ const mapStateToProps = ({ pagination, server }) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  const { INC_PAGE, DEC_PAGE } = bindActionCreators(actions, dispatch)
+  const { INC_PAGE, DEC_PAGE, SIGN_UP_CLEAR, SIGN_IN_CLEAR } = bindActionCreators(actions, dispatch)
   const { GET_ARTICLES } = actions
   return {
     INC_PAGE,
     DEC_PAGE,
     GET_ARTICLES,
+    SIGN_UP_CLEAR,
+    SIGN_IN_CLEAR,
   }
 }
 

@@ -6,11 +6,15 @@ import './main.scss'
 import SignUp from '../sign-up'
 import SignIn from '../sign-in'
 import ProfileEdit from '../profile-edit'
+import ArticleCreate from '../article-create'
 
 function Main() {
   return (
     <div className="main">
       <Switch>
+        <Route path="/new-article">
+          <ArticleCreate />
+        </Route>
         <Route path="/profile">
           <ProfileEdit />
         </Route>

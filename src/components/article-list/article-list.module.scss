@@ -84,6 +84,9 @@
     display: flex;
     gap: 8px;
     margin-top: 4px;
+    height: 23px;
+    overflow: hidden;
+    flex-wrap: wrap;
   }
 
   &__tag {
@@ -128,5 +131,10 @@
     line-height: 22px;
     color: #000000bf;
     width: 682px;
+    height: 45px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+
 }

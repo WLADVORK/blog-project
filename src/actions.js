@@ -2,10 +2,21 @@ export const INC_PAGE = (number) => ({ type: 'INC_PAGE', payload: number })
 
 export const DEC_PAGE = (number) => ({ type: 'DEC_PAGE', payload: number })
 
-export const GET_ARTICLES = (dispatch, page) => {
-  fetch(`https://blog.kata.academy/api/articles?limit=20&offset=${(page - 1) * 20}`)
-    .then((response) => response.json())
-    .then((result) => dispatch({ type: 'GET_ARTICLES', payload: result.articles, payload1: result.articlesCount }))
+export const GET_ARTICLES = (dispatch, page, token) => {
+  if (token) {
+    fetch(`https://blog.kata.academy/api/articles?limit=20&offset=${(page - 1) * 20}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((result) => dispatch({ type: 'GET_ARTICLES', payload: result.articles, payload1: result.articlesCount }))
+  } else {
+    fetch(`https://blog.kata.academy/api/articles?limit=20&offset=${(page - 1) * 20}`)
+      .then((response) => response.json())
+      .then((result) => dispatch({ type: 'GET_ARTICLES', payload: result.articles, payload1: result.articlesCount }))
+  }
 }
 
 export const SIGN_UP = (dispatch, username, email, password) => {
@@ -109,3 +120,68 @@ export const PASSWORD_PROFILE_EDIT_CHANGE = (value) => ({ type: 'PASSWORD_PROFIL
 export const IMAGE_PROFILE_EDIT_CHANGE = (value) => ({ type: 'IMAGE_PROFILE_EDIT_CHANGE', payload: value })
 
 export const PROFILE_EDIT_CLEAR = () => ({ type: 'PROFILE_EDIT_CLEAR' })
+
+export const TITLE_ARTICLE_CREATE_CHANGE = (value) => ({ type: 'TITLE_ARTICLE_CREATE_CHANGE', payload: value })
+
+export const DESCRIPTION_ARTICLE_CREATE_CHANGE = (value) => ({
+  type: 'DESCRIPTION_ARTICLE_CREATE_CHANGE',
+  payload: value,
+})
+
+export const TEXT_ARTICLE_CREATE_CHANGE = (value) => ({ type: 'TEXT_ARTICLE_CREATE_CHANGE', payload: value })
+
+export const TAGS_ARTICLE_CREATE_CHANGE = (value) => ({ type: 'TAGS_ARTICLE_CREATE_CHANGE', payload: value })
+
+export const TAG_ARTICLE_CREATE_DELETE = (value) => ({ type: 'TAG_ARTICLE_CREATE_DELETE', payload: value })
+
+export const ARTICLE_CREATE = (dispatch, token, title, description, text, tags) => {
+  const tagsObj = tags ? { tagList: tags } : {}
+
+  fetch('https://blog.kata.academy/api/articles', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`,
+    },
+    body: JSON.stringify({
+      article: {
+        title,
+        description,
+        body: text,
+        ...tagsObj,
+      },
+    }),
+  })
+    .then((response) => response.json())
+    .then(() => {
+      dispatch({ type: 'ARTICLE_CREATE' })
+    })
+    .catch(() => dispatch({ type: 'ARTICLE_CREATE' }))
+}
+
+export const ARTICLE_CREATE_CLEAR = () => ({ type: 'ARTICLE_CREATE_CLEAR' })
+
+export const ARTICLE_EDIT = (dispatch, token, title, description, text, tags, slug) => {
+  const tagsObj = tags ? { tagList: tags } : {}
+
+  fetch(`https://blog.kata.academy/api/articles/${slug}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`,
+    },
+    body: JSON.stringify({
+      article: {
+        title,
+        description,
+        body: text,
+        ...tagsObj,
+      },
+    }),
+  })
+    .then((response) => response.json())
+    .then(() => {
+      dispatch({ type: 'ARTICLE_EDIT' })
+    })
+    .catch(() => dispatch({ type: 'ARTICLE_EDIT' }))
+}

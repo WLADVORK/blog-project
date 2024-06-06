@@ -125,12 +125,48 @@ const profileEditReducer = (state = initialStateProfileEdit, action) => {
   }
 }
 
+const initialStateArticleCreate = {
+  titleArticleCreate: '',
+  descriptionArticleCreate: '',
+  textArticleCreate: '',
+  tagsArticleCreate: [],
+}
+
+const articleCreateReducer = (state = initialStateArticleCreate, action) => {
+  switch (action.type) {
+    case 'TITLE_ARTICLE_CREATE_CHANGE':
+      return { ...state, titleArticleCreate: action.payload }
+    case 'DESCRIPTION_ARTICLE_CREATE_CHANGE':
+      return { ...state, descriptionArticleCreate: action.payload }
+    case 'TEXT_ARTICLE_CREATE_CHANGE':
+      return { ...state, textArticleCreate: action.payload }
+    case 'TAGS_ARTICLE_CREATE_CHANGE':
+      return { ...state, tagsArticleCreate: [...state.tagsArticleCreate, action.payload] }
+    case 'TAG_ARTICLE_CREATE_DELETE': {
+      return {
+        ...state,
+        tagsArticleCreate: [
+          ...state.tagsArticleCreate.slice(0, action.payload),
+          ...state.tagsArticleCreate.slice(action.payload + 1),
+        ],
+      }
+    }
+    case 'ARTICLE_CREATE':
+    case 'ARTICLE_CREATE_CLEAR':
+    case 'ARTICLE_EDIT':
+      return initialStateArticleCreate
+    default:
+      return state
+  }
+}
+
 const rootReducer = combineReducers({
   pagination: paginationReducer,
   server: serverReducer,
   signUp: signUpReducer,
   signIn: signInReducer,
   profileEdit: profileEditReducer,
+  articleCreate: articleCreateReducer,
 })
 
 export default rootReducer

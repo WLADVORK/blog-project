@@ -63,7 +63,7 @@ function ProfileEdit({
   let emailError = false
 
   if (!JSON.parse(localStorage.getItem('userData'))) {
-    history.push('/')
+    history.push('/sign-in')
   }
 
   if (editComplete) {

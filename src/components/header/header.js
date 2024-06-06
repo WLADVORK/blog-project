@@ -1,24 +1,60 @@
+/* eslint-disable object-curly-newline */
+/* eslint-disable max-len */
 /* eslint-disable import/no-extraneous-dependencies */
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import * as actions from '../../actions'
 
 import styles from './header.module.scss'
 
-function Header({ answer, userData, DATA_CLEAR }) {
+function Header({
+  answer,
+  userData,
+  page,
+  DATA_CLEAR,
+  SIGN_UP_CLEAR,
+  SIGN_IN_CLEAR,
+  ARTICLE_CREATE_CLEAR,
+  GET_ARTICLES,
+}) {
+  const dispatch = useDispatch()
   return (
     <div className={styles.header}>
-      <Link to="/" className={styles.header__heading}>
+      <Link
+        to="/"
+        className={styles.header__heading}
+        onClick={() => {
+          if (JSON.parse(localStorage.getItem('userData')) && userData) {
+            dispatch((dispatched) => GET_ARTICLES(dispatched, page, userData.user.token))
+          } else {
+            dispatch((dispatched) => GET_ARTICLES(dispatched, page))
+          }
+          SIGN_UP_CLEAR()
+          SIGN_IN_CLEAR()
+          ARTICLE_CREATE_CLEAR()
+        }}
+      >
         Realworld Blog
       </Link>
       {answer ? (
         <>
-          <Link to="/" className={styles.header__createArticle}>
+          <Link
+            to="/new-article"
+            onClick={() => {
+              ARTICLE_CREATE_CLEAR()
+            }}
+            className={styles.header__createArticle}
+          >
             Create article
           </Link>
-          <Link to="/profile">
+          <Link
+            to="/profile"
+            onClick={() => {
+              ARTICLE_CREATE_CLEAR()
+            }}
+          >
             <div className={styles.header__profile}>
               <span className={styles.header__name}>{userData.user.username}</span>
               <img
@@ -32,6 +68,7 @@ function Header({ answer, userData, DATA_CLEAR }) {
             to="/"
             className={styles.header__logOut}
             onClick={() => {
+              ARTICLE_CREATE_CLEAR()
               localStorage.removeItem('userData')
               DATA_CLEAR()
             }}
@@ -53,15 +90,21 @@ function Header({ answer, userData, DATA_CLEAR }) {
   )
 }
 
-const mapStatetoProps = ({ server }) => ({
+const mapStatetoProps = ({ server, pagination }) => ({
   answer: server.answer,
   userData: server.userData,
+  page: pagination.page,
 })
 
 const mapDispatchToProps = (dispatch) => {
-  const { DATA_CLEAR } = bindActionCreators(actions, dispatch)
+  const { DATA_CLEAR, SIGN_UP_CLEAR, SIGN_IN_CLEAR, ARTICLE_CREATE_CLEAR } = bindActionCreators(actions, dispatch)
+  const { GET_ARTICLES } = actions
   return {
     DATA_CLEAR,
+    SIGN_UP_CLEAR,
+    SIGN_IN_CLEAR,
+    ARTICLE_CREATE_CLEAR,
+    GET_ARTICLES,
   }
 }
 

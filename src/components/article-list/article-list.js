@@ -26,7 +26,69 @@ function ArticleList({ page, maxPage, articles, userData, INC_PAGE, DEC_PAGE, GE
   }
   useEffect(() => {
     dispatch((dispatched) => GET_ARTICLES(dispatched, page, token))
-  }, [])
+  }, [userData])
+
+  const articleList = articles.map((item) => {
+    const tags = item.tagList.map((tag, index) => (
+      <div key={`${item.slug}${index}`} className={styles.article__tag}>
+        {tag}
+      </div>
+    ))
+    const timeCreated = format(new Date(item.createdAt), 'LLLL d, yyy')
+    return (
+      <div className={styles.article} key={item.slug}>
+        <div className={styles.article__header}>
+          <div className={styles.article__heading}>
+            <div className={styles.article__title}>
+              <Link to={`articles/${item.slug}`}>{item.title}</Link>
+            </div>
+            <div className={styles.likes}>
+              <img
+                className={styles.likes__img}
+                src={item.favorited ? 'images/heart-active.svg' : 'images/heart-unactive.svg'}
+                alt="heart-icon"
+                onClick={() => {
+                  if (JSON.parse(localStorage.getItem('userData')) && userData) {
+                    if (item.favorited) {
+                      fetch(`https://blog.kata.academy/api/articles/${item.slug}/favorite`, {
+                        method: 'DELETE',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Token ${userData.user.token}`,
+                        },
+                      })
+                        .then((respone) => respone.text())
+                        .then(() => dispatch((dispatched) => GET_ARTICLES(dispatched, page, token)))
+                    } else {
+                      fetch(`https://blog.kata.academy/api/articles/${item.slug}/favorite`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Token ${userData.user.token}`,
+                        },
+                      })
+                        .then((respone) => respone.text())
+                        .then(() => dispatch((dispatched) => GET_ARTICLES(dispatched, page, token)))
+                    }
+                  }
+                }}
+              />
+              <span className={styles.likes__value}>{item.favoritesCount}</span>
+            </div>
+          </div>
+          <div className={styles.article__tags}>{tags}</div>
+          <div className={styles.author}>
+            <div className={styles.author__info}>
+              <div className={styles.author__name}>{item.author.username}</div>
+              <div className={styles.author__date}>{timeCreated}</div>
+            </div>
+            <img className={styles.author__image} src={item.author.image} alt="profile-icon" />
+          </div>
+        </div>
+        <div className={styles.article__description}>{item.description}</div>
+      </div>
+    )
+  })
 
   let page1 = page <= 2 ? 1 : page - 2
   let page2 = page <= 2 ? 2 : page - 1
@@ -54,7 +116,7 @@ function ArticleList({ page, maxPage, articles, userData, INC_PAGE, DEC_PAGE, GE
       </Route>
       <Route path={'/' || '/articles/'} exact>
         <div className={styles.articleList}>
-          {articles}
+          {articleList}
           {articles.length > 0 ? (
             <div className={styles.pagination}>
               <img
@@ -339,43 +401,10 @@ const mapStateToProps = ({ pagination, server }) => {
       maxPage: server.maxPage,
     }
   }
-  const articles = server.articles.map((item) => {
-    const tags = item.tagList.map((tag, index) => (
-      <div key={`${item.slug}${index}`} className={styles.article__tag}>
-        {tag}
-      </div>
-    ))
-    const timeCreated = format(new Date(item.createdAt), 'LLLL d, yyy')
-    return (
-      <div className={styles.article} key={item.slug}>
-        <div className={styles.article__header}>
-          <div className={styles.article__heading}>
-            <div className={styles.article__title}>
-              <Link to={`articles/${item.slug}`}>{item.title}</Link>
-            </div>
-            <div className={styles.likes}>
-              <img className={styles.likes__img} src="images/heart.svg" alt="heart-icon" />
-              <span className={styles.likes__value}>{item.favoritesCount}</span>
-            </div>
-          </div>
-          <div className={styles.article__tags}>{tags}</div>
-          <div className={styles.author}>
-            <div className={styles.author__info}>
-              <div className={styles.author__name}>{item.author.username}</div>
-              <div className={styles.author__date}>{timeCreated}</div>
-            </div>
-            <img className={styles.author__image} src={item.author.image} alt="profile-icon" />
-          </div>
-        </div>
-        <div className={styles.article__description}>{item.description}</div>
-      </div>
-    )
-  })
-
   return {
     page: pagination.page,
     maxPage: server.maxPage,
-    articles,
+    articles: server.articles,
     userData: server.userData,
   }
 }

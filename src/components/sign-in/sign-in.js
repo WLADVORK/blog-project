@@ -24,9 +24,20 @@ function SignIn({
   SIGN_IN,
   SIGN_UP_CLEAR,
 }) {
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  let errorData = false
+
   useEffect(() => {
+    if (answer) {
+      history.push('/')
+      localStorage.setItem('userData', JSON.stringify(userData))
+    } else if (answer === false) {
+      errorData = userData['email or password'] !== undefined
+    }
     SIGN_UP_CLEAR()
-  }, [])
+  }, [answer])
 
   // eslint-disable-next-line operator-linebreak
   const EMAIL_REGEXP =
@@ -34,18 +45,6 @@ function SignIn({
   const emailValid = EMAIL_REGEXP.test(emailSignIn) && emailSignIn.length > 0
   const passwordValid = passwordSignIn && passwordSignIn.length > 0
   const generalValidation = emailValid && passwordValid
-
-  const dispatch = useDispatch()
-  const history = useHistory()
-
-  let errorData = false
-
-  if (answer) {
-    localStorage.setItem('userData', JSON.stringify(userData))
-    history.push('/')
-  } else if (answer === false) {
-    errorData = userData['email or password'] !== undefined
-  }
 
   if (errorData) {
     const inputEmail = document.querySelector(
@@ -71,6 +70,7 @@ function SignIn({
           <input
             placeholder="Email address"
             type="email"
+            autoComplete="on"
             className={styles.signIn__input}
             onChange={(event) => {
               DATA_CLEAR()
@@ -98,6 +98,7 @@ function SignIn({
           <input
             placeholder="Password"
             type="password"
+            autoComplete="on"
             className={styles.signIn__input}
             onChange={(event) => {
               DATA_CLEAR()

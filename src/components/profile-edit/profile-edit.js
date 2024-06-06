@@ -154,6 +154,7 @@ function ProfileEdit({
           <input
             placeholder="New password"
             type="password"
+            autoComplete="on"
             className={styles.profile__input}
             onChange={(event) => {
               PROFILE_EDIT_CLEAR()

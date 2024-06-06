@@ -2,35 +2,20 @@
 /* eslint-disable max-len */
 /* eslint-disable import/no-extraneous-dependencies */
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import * as actions from '../../actions'
 
 import styles from './header.module.scss'
 
-function Header({
-  answer,
-  userData,
-  page,
-  DATA_CLEAR,
-  SIGN_UP_CLEAR,
-  SIGN_IN_CLEAR,
-  ARTICLE_CREATE_CLEAR,
-  GET_ARTICLES,
-}) {
-  const dispatch = useDispatch()
+function Header({ answer, userData, DATA_CLEAR, SIGN_UP_CLEAR, SIGN_IN_CLEAR, ARTICLE_CREATE_CLEAR }) {
   return (
     <div className={styles.header}>
       <Link
         to="/"
         className={styles.header__heading}
         onClick={() => {
-          if (JSON.parse(localStorage.getItem('userData')) && userData) {
-            dispatch((dispatched) => GET_ARTICLES(dispatched, page, userData.user.token))
-          } else {
-            dispatch((dispatched) => GET_ARTICLES(dispatched, page))
-          }
           SIGN_UP_CLEAR()
           SIGN_IN_CLEAR()
           ARTICLE_CREATE_CLEAR()
@@ -90,21 +75,19 @@ function Header({
   )
 }
 
-const mapStatetoProps = ({ server, pagination }) => ({
+const mapStatetoProps = ({ server }) => ({
   answer: server.answer,
   userData: server.userData,
-  page: pagination.page,
 })
 
 const mapDispatchToProps = (dispatch) => {
   const { DATA_CLEAR, SIGN_UP_CLEAR, SIGN_IN_CLEAR, ARTICLE_CREATE_CLEAR } = bindActionCreators(actions, dispatch)
-  const { GET_ARTICLES } = actions
+
   return {
     DATA_CLEAR,
     SIGN_UP_CLEAR,
     SIGN_IN_CLEAR,
     ARTICLE_CREATE_CLEAR,
-    GET_ARTICLES,
   }
 }
 

@@ -30,7 +30,20 @@ function SignUp({
   answer,
   userData,
 }) {
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  let usernameError = false
+  let emailError = false
+
   useEffect(() => {
+    if (answer) {
+      history.push('/')
+      localStorage.setItem('userData', JSON.stringify(userData))
+    } else if (answer === false) {
+      usernameError = userData.username !== undefined
+      emailError = userData.email !== undefined
+    }
     SIGN_IN_CLEAR()
   }, [])
 
@@ -48,19 +61,6 @@ function SignUp({
   const passwordValid = !!(passwordSignUp && passwordSignUp.length >= 6 && passwordSignUp.length <= 40)
   const passwordAgainValid = passwordSignUp === passwordAgainSignUp
   const generalValidation = usernameValid && emailValid && passwordValid && passwordAgainValid && agreementSignUp
-
-  const dispatch = useDispatch()
-  const history = useHistory()
-
-  let usernameError = false
-  let emailError = false
-  if (answer) {
-    localStorage.setItem('userData', JSON.stringify(userData))
-    history.push('/')
-  } else if (answer === false) {
-    usernameError = userData.username !== undefined
-    emailError = userData.email !== undefined
-  }
 
   if (usernameError) {
     const input = document.querySelector(
@@ -118,6 +118,7 @@ function SignUp({
           <input
             placeholder="Email address"
             type="email"
+            autoComplete="on"
             className={styles.signUp__input}
             onChange={(event) => {
               DATA_CLEAR()
@@ -135,6 +136,7 @@ function SignUp({
           <input
             placeholder="Password"
             type="password"
+            autoComplete="on"
             className={styles.signUp__input}
             onChange={(event) => {
               if (!passwordValid) {
@@ -153,6 +155,7 @@ function SignUp({
           <input
             placeholder="Password"
             type="password"
+            autoComplete="on"
             className={styles.signUp__input}
             onChange={(event) => {
               if (!passwordAgainValid) {

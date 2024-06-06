@@ -1,20 +1,24 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable max-len */
 /* eslint-disable object-curly-newline */
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-array-index-key */
-import { connect } from 'react-redux'
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import { connect, useDispatch } from 'react-redux'
 import { useParams, Switch, Route, useRouteMatch, useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { format } from 'date-fns'
 import Markdown from 'react-markdown'
 import { Popconfirm } from 'antd'
 
 import ArticleCreate from '../article-create'
+import { GET_ARTICLES } from '../../actions'
 
 import styles from './article.module.scss'
 
-function Article({ articles, userData }) {
+function Article({ articles, userData, page }) {
   const slug = useParams().Id
   const { url } = useRouteMatch()
   const history = useHistory()
+  const dispatch = useDispatch()
   const article = articles.find((item) => item.slug === slug)
 
   if (!article) return <div />
@@ -36,7 +40,36 @@ function Article({ articles, userData }) {
             <div className={styles.article__heading}>
               <div className={styles.article__title}>{article.title}</div>
               <div className={styles.likes}>
-                <img className={styles.likes__img} src="images/heart.svg" alt="heart-icon" />
+                <img
+                  className={styles.likes__img}
+                  src={article.favorited ? 'images/heart-active.svg' : 'images/heart-unactive.svg'}
+                  alt="heart-icon"
+                  onClick={() => {
+                    if (JSON.parse(localStorage.getItem('userData')) && userData) {
+                      if (article.favorited) {
+                        fetch(`https://blog.kata.academy/api/articles/${article.slug}/favorite`, {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${userData.user.token}`,
+                          },
+                        })
+                          .then((respone) => respone.text())
+                          .then(() => dispatch((dispatched) => GET_ARTICLES(dispatched, page, userData.user.token)))
+                      } else {
+                        fetch(`https://blog.kata.academy/api/articles/${article.slug}/favorite`, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${userData.user.token}`,
+                          },
+                        })
+                          .then((respone) => respone.text())
+                          .then(() => dispatch((dispatched) => GET_ARTICLES(dispatched, page, userData.user.token)))
+                      }
+                    }
+                  }}
+                />
                 <span className={styles.likes__value}>{article.favoritesCount}</span>
               </div>
             </div>
@@ -92,11 +125,14 @@ function Article({ articles, userData }) {
   )
 }
 
-const mapStateToProps = ({ server }) => {
+const mapStateToProps = ({ server, pagination }) => {
   const { userData, articles } = server
+  const { page } = pagination
   return {
     articles,
     userData,
+    page,
   }
 }
+
 export default connect(mapStateToProps)(Article)

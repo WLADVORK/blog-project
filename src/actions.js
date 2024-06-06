@@ -154,6 +154,7 @@ export const ARTICLE_CREATE = (dispatch, token, title, description, text, tags) 
   })
     .then((response) => response.json())
     .then(() => {
+      GET_ARTICLES(dispatch, 1, token)
       dispatch({ type: 'ARTICLE_CREATE' })
     })
     .catch(() => dispatch({ type: 'ARTICLE_CREATE' }))
@@ -161,7 +162,7 @@ export const ARTICLE_CREATE = (dispatch, token, title, description, text, tags) 
 
 export const ARTICLE_CREATE_CLEAR = () => ({ type: 'ARTICLE_CREATE_CLEAR' })
 
-export const ARTICLE_EDIT = (dispatch, token, title, description, text, tags, slug) => {
+export const ARTICLE_EDIT = (dispatch, token, title, description, text, tags, slug, page) => {
   const tagsObj = tags ? { tagList: tags } : {}
 
   fetch(`https://blog.kata.academy/api/articles/${slug}`, {
@@ -181,6 +182,7 @@ export const ARTICLE_EDIT = (dispatch, token, title, description, text, tags, sl
   })
     .then((response) => response.json())
     .then(() => {
+      GET_ARTICLES(dispatch, page, token)
       dispatch({ type: 'ARTICLE_EDIT' })
     })
     .catch(() => dispatch({ type: 'ARTICLE_EDIT' }))

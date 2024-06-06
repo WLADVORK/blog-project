@@ -30,22 +30,23 @@ function SignUp({
   answer,
   userData,
 }) {
+  useEffect(() => {
+    SIGN_IN_CLEAR()
+  }, [])
+
   const dispatch = useDispatch()
   const history = useHistory()
 
   let usernameError = false
   let emailError = false
 
-  useEffect(() => {
-    if (answer) {
-      history.push('/')
-      localStorage.setItem('userData', JSON.stringify(userData))
-    } else if (answer === false) {
-      usernameError = userData.username !== undefined
-      emailError = userData.email !== undefined
-    }
-    SIGN_IN_CLEAR()
-  }, [])
+  if (answer) {
+    history.push('/')
+    localStorage.setItem('userData', JSON.stringify(userData))
+  } else if (answer === false) {
+    usernameError = userData.username !== undefined
+    emailError = userData.email !== undefined
+  }
 
   const USERNAME_REGEXP = /^[a-z0-9]*$/
   // eslint-disable-next-line operator-linebreak
@@ -61,7 +62,6 @@ function SignUp({
   const passwordValid = !!(passwordSignUp && passwordSignUp.length >= 6 && passwordSignUp.length <= 40)
   const passwordAgainValid = passwordSignUp === passwordAgainSignUp
   const generalValidation = usernameValid && emailValid && passwordValid && passwordAgainValid && agreementSignUp
-
   if (usernameError) {
     const input = document.querySelector(
       `.${styles.signUp__form} .${styles.signUp__label}:nth-child(1) .${styles.signUp__input}`

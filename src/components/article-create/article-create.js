@@ -28,6 +28,7 @@ function ArticleCreate({
   tagsArticleCreate,
   userData,
   article,
+  page,
 }) {
   useEffect(() => {
     if (article) {
@@ -187,7 +188,8 @@ function ArticleCreate({
                     descriptionArticleCreate,
                     textArticleCreate,
                     tagsArticleCreate,
-                    article.slug
+                    article.slug,
+                    page
                   )
                 } else {
                   // eslint-disable-next-line implicit-arrow-linebreak
@@ -246,9 +248,9 @@ function ArticleCreate({
   )
 }
 
-const mapStateToProps = ({ articleCreate, server }) => {
+const mapStateToProps = ({ articleCreate, server, pagination }) => {
   const { userData } = server
-
+  const { page } = pagination
   const { titleArticleCreate, descriptionArticleCreate, textArticleCreate, tagsArticleCreate } = articleCreate
   return {
     titleArticleCreate,
@@ -256,6 +258,7 @@ const mapStateToProps = ({ articleCreate, server }) => {
     textArticleCreate,
     tagsArticleCreate,
     userData,
+    page,
   }
 }
 

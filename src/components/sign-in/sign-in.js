@@ -24,20 +24,21 @@ function SignIn({
   SIGN_IN,
   SIGN_UP_CLEAR,
 }) {
+  useEffect(() => {
+    SIGN_UP_CLEAR()
+  }, [])
+
   const dispatch = useDispatch()
   const history = useHistory()
 
   let errorData = false
 
-  useEffect(() => {
-    if (answer) {
-      history.push('/')
-      localStorage.setItem('userData', JSON.stringify(userData))
-    } else if (answer === false) {
-      errorData = userData['email or password'] !== undefined
-    }
-    SIGN_UP_CLEAR()
-  }, [answer])
+  if (answer) {
+    history.push('/')
+    localStorage.setItem('userData', JSON.stringify(userData))
+  } else if (answer === false) {
+    errorData = userData['email or password'] !== undefined
+  }
 
   // eslint-disable-next-line operator-linebreak
   const EMAIL_REGEXP =

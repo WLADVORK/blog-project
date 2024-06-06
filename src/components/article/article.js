@@ -96,6 +96,8 @@ function Article({ articles, userData, page }) {
                         Authorization: `Token ${userData.user.token}`,
                       },
                     })
+                      .then((respone) => respone.text())
+                      .then(() => dispatch((dispatched) => GET_ARTICLES(dispatched, page, userData.user.token)))
                     history.push('/')
                   }}
                 >
